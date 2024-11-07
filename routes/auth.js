@@ -3,12 +3,14 @@ const router = express.Router();
 const {
   register,
   login,
-  getAllSubUsers,
+  addNewSubUser,
+  subUserLogin,
 } = require("../controllers/authController");
 const middleware = require("../middlewares/authMiddleware");
 
 router.post("/admin/register", register);
 router.post("/admin/login", login);
-router.get("/admin/sub-users", middleware, getAllSubUsers);
+router.post("/sub-user/login", subUserLogin);
+router.post("/admin/sub-users", middleware, addNewSubUser);
 
 module.exports = router;

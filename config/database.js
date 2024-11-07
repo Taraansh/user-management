@@ -11,4 +11,8 @@ const sequelize = new Sequelize(
   }
 );
 
+sequelize.sync({ alter: true }).then(() => {
+  console.log("Database synchronized");
+});
+
 module.exports = sequelize;

@@ -1,15 +1,23 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
 require("dotenv").config();
 const { successResponse, errorResponse } = require("./../config/response");
+const { Admin, SubUser } = require("../models");
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Register a new user
 const register = async (req, res) => {
   try {
     const { username, password } = req.body;
+
+    const existingUser = await Admin.findOne({ where: { username } });
+    if (existingUser) {
+      return errorResponse(req, res, "Username already exists", 400);
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({
+    const user = await Admin.create({
       username,
       password: hashedPassword,
       role: "admin",
@@ -33,13 +41,13 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { username, password } = req.body;
-    const user = await User.findOne({ where: { username } });
+    const user = await Admin.findOne({ where: { username } });
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return errorResponse(req, res, "Invalid credentials", 400);
     }
     const token = jwt.sign(
-      { userId: user.id, username: user.username },
-      process.env.JWT_SECRET,
+      { userId: user.id, username: user.username, role: user.role },
+      JWT_SECRET,
       {
         expiresIn: "1h",
       }
@@ -50,26 +58,43 @@ const login = async (req, res) => {
   }
 };
 
-// Controller to get all sub-users under the logged-in admin
-const getAllSubUsers = async (req, res) => {
+// Sub-user login controller
+const subUserLogin = async (req, res) => {
   try {
-    if (req.user.role !== "admin") {
-      return errorResponse(req, res, "Access denied. Admins only.", 403);
+    const { username, password } = req.body;
+
+    const subUser = await SubUser.findOne({ where: { username } });
+    if (!subUser) {
+      return errorResponse(req, res, "Invalid username or password", 401);
     }
 
-    const subUsers = await User.findAll({
-      where: { createdBy: req.user.userId, role: "sub_user" },
-      attributes: { exclude: ["password"] },
-    });
+    const isPasswordValid = await bcrypt.compare(password, subUser.password);
+    if (!isPasswordValid) {
+      return errorResponse(req, res, "Invalid username or password", 401);
+    }
 
-    successResponse(req, res, "Sub-Users Created by  Admin", subUsers, 200);
+    const token = jwt.sign(
+      { userId: subUser.id, role: "sub_user", createdBy: subUser.createdBy },
+      JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    successResponse(
+      req,
+      res,
+      "Login successful",
+      {
+        token,
+      },
+      200
+    );
   } catch (error) {
     errorResponse(req, res, error.message, 500);
   }
 };
 
 // Controller to create a new sub-user under the logged-in admin
-const createSubUser = async (req, res) => {
+const addNewSubUser = async (req, res) => {
   try {
     if (req.user.role !== "admin") {
       return errorResponse(req, res, "Access denied. Admins only.", 403);
@@ -86,9 +111,14 @@ const createSubUser = async (req, res) => {
       );
     }
 
+    const existingUser = await SubUser.findOne({ where: { username } });
+    if (existingUser) {
+      return errorResponse(req, res, "Username already exists", 400);
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const subUser = await User.create({
+    const subUser = await SubUser.create({
       username,
       password: hashedPassword,
       role: "sub_user",
@@ -101,7 +131,7 @@ const createSubUser = async (req, res) => {
       req,
       res,
       "Sub-user created successfully",
-      { subUserWithoutPassword },
+      subUserWithoutPassword,
       201
     );
   } catch (error) {
@@ -109,4 +139,4 @@ const createSubUser = async (req, res) => {
   }
 };
 
-module.exports = { register, login, getAllSubUsers, createSubUser };
+module.exports = { register, login, subUserLogin, addNewSubUser };
