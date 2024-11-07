@@ -1,0 +1,125 @@
+{
+	"info": {
+		"_postman_id": "ca9db331-1c77-48f0-9f9b-257d7ae99655",
+		"name": "User-management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "28580117"
+	},
+	"item": [
+		{
+			"name": "Admin Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"admin\",\r\n    \"password\":\"admin\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/auth/admin/register"
+			},
+			"response": []
+		},
+		{
+			"name": "Admin Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"admin\",\r\n    \"password\":\"admin\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/auth/admin/login"
+			},
+			"response": []
+		},
+		{
+			"name": "Get All sub User associated with Admin",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInVzZXJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzA5OTk5NTMsImV4cCI6MTczMTAwMzU1M30.0sl6vTi7kje4q-KFB8WURXEiD6dzgf0qYaVUuSVMBBg",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:3000/api/admin/sub-users"
+			},
+			"response": []
+		},
+		{
+			"name": "Add new sub User associated with Admin",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInVzZXJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzA5OTk5NTMsImV4cCI6MTczMTAwMzU1M30.0sl6vTi7kje4q-KFB8WURXEiD6dzgf0qYaVUuSVMBBg",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"subuser3\",\r\n    \"password\":\"subuser3\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/auth/admin/sub-users"
+			},
+			"response": []
+		},
+		{
+			"name": "Sub User Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdWJfdXNlciIsImNyZWF0ZWRCeSI6MSwiaWF0IjoxNzMwOTk0ODg4LCJleHAiOjE3MzA5OTg0ODh9.HdXSEXUU6RkSIw7Z3oZFoY5K8qYW8LFtZUxZNacHzT0",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"subuser2\",\r\n    \"password\":\"subuser2\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/auth/sub-user/login"
+			},
+			"response": []
+		},
+		{
+			"name": "Sub User Profile",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdWJfdXNlciIsImNyZWF0ZWRCeSI6MSwiaWF0IjoxNzMwOTk0ODg4LCJleHAiOjE3MzA5OTg0ODh9.HdXSEXUU6RkSIw7Z3oZFoY5K8qYW8LFtZUxZNacHzT0",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:3000/api/sub-user/profile"
+			},
+			"response": []
+		}
+	]
+}
